@@ -1,5 +1,6 @@
 package com.banca_digital.entidades;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,5 +21,6 @@ public class Cliente {
 
     // Un cliente tiene muchas cuentas bancarias
     @OneToMany(mappedBy = "cliente")
+    // @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<CuentaBancaria> cuentaBancarias;
 }

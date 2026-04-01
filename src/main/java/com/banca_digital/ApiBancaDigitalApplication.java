@@ -1,21 +1,25 @@
 package com.banca_digital;
 
-import com.banca_digital.entidades.Cliente;
-import com.banca_digital.entidades.CuentaActual;
-import com.banca_digital.entidades.CuentaAhorro;
-import com.banca_digital.entidades.OperacionCuenta;
+import com.banca_digital.dto.ClienteDTO;
+import com.banca_digital.dto.CuentaActualDTO;
+import com.banca_digital.dto.CuentaAhorroDTO;
+import com.banca_digital.dto.CuentaBancariaDTO;
+import com.banca_digital.entidades.*;
 import com.banca_digital.enums.EstadoCuenta;
 import com.banca_digital.enums.TipoOperacion;
+import com.banca_digital.excepciones.ExcepcionClienteNoEncontrado;
 import com.banca_digital.repositorios.ClienteRepositorio;
 import com.banca_digital.repositorios.CuentaBancariaRepositorio;
 import com.banca_digital.repositorios.OperacionCuentaRepositorio;
 import com.banca_digital.servicios.BancoServicio;
+import com.banca_digital.servicios.CuentaBancariaServicio;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -34,47 +38,37 @@ public class ApiBancaDigitalApplication {
 	}
 
 	//@Bean
-	CommandLineRunner empezar(ClienteRepositorio clienteRepositorio,
-							  CuentaBancariaRepositorio cuentaBancariaRepositorio,
-							  OperacionCuentaRepositorio operacionCuentaBancariaRepositorio) {
+	CommandLineRunner empezar(CuentaBancariaServicio  cuentaBancariaServicio) {
 		return args -> {
 			Stream.of("Wilfredo", "Jose Ramon", "Julio", "Alan").forEach(nombre -> {
-				Cliente cliente = new Cliente();
+				ClienteDTO cliente = new ClienteDTO();
 				cliente.setNombre(nombre);
 				cliente.setEmail(nombre+"@gmail.com");
-				clienteRepositorio.save(cliente);
+				cuentaBancariaServicio.guardarCliente(cliente);
 			});
-
-			// Le asignamos cuentas bancarias
-			clienteRepositorio.findAll().forEach(cliente -> {
-				CuentaActual cuentaActual = new CuentaActual();
-				cuentaActual.setId(UUID.randomUUID().toString());
-				cuentaActual.setSaldo(Math.random() * 90000);
-				cuentaActual.setFechaCreacion(new Date());
-				cuentaActual.setEstadoCuenta(EstadoCuenta.CREADA);
-				cuentaActual.setCliente(cliente);
-				cuentaActual.setSobregiro(9000);
-				cuentaBancariaRepositorio.save(cuentaActual);
-
-				CuentaAhorro cuentaAhorro = new CuentaAhorro();
-				cuentaAhorro.setId(UUID.randomUUID().toString());
-				cuentaAhorro.setSaldo(Math.random() * 90000);
-				cuentaAhorro.setFechaCreacion(new Date());
-				cuentaAhorro.setEstadoCuenta(EstadoCuenta.CREADA);
-				cuentaAhorro.setCliente(cliente);
-				cuentaAhorro.setTasaDeInteres(5.5);
-				cuentaBancariaRepositorio.save(cuentaAhorro);
-				});
-
-			// Agregar las operaciones
-			cuentaBancariaRepositorio.findAll().forEach(cuentaBancaria -> {
-				for(int i=0;i<10;i++) {
-					OperacionCuenta operacionCuenta = new OperacionCuenta();
-					operacionCuenta.setFechaOperacion(new Date());
-					operacionCuenta.setImporte(Math.random() * 12000);
-					operacionCuenta.setTipoOperacion(Math.random() > 05 ? TipoOperacion.DEBITO : TipoOperacion.CREDITO);
-					operacionCuenta.setCuentaBancaria(cuentaBancaria);
-					operacionCuentaBancariaRepositorio.save(operacionCuenta);
+			cuentaBancariaServicio.listaClientes().forEach(cliente -> {
+				try {
+					cuentaBancariaServicio.guardarCuentaBancariaActual(Math.random() * 90000, 9000, cliente.getId());
+					cuentaBancariaServicio.guardarCuentaBancariaAhorro(120000, 5.5, cliente.getId());
+					List<CuentaBancariaDTO> cuentaBancarias = cuentaBancariaServicio.listaCuentaBancarias();
+					for(CuentaBancariaDTO cuentaBancaria : cuentaBancarias) {
+						for(int i=0;i<10;i++) {
+							String cuentaId;
+							if (cuentaBancaria instanceof CuentaAhorroDTO) {
+								cuentaId = ((CuentaAhorroDTO) cuentaBancaria).getId();
+							} else if (cuentaBancaria instanceof CuentaActualDTO) {
+								cuentaId = ((CuentaActualDTO) cuentaBancaria).getId();
+							} else {
+								throw new IllegalStateException("Tipo de cuenta desconocido: " + cuentaBancaria.getClass().getName());
+							}
+							cuentaBancariaServicio.credito(cuentaId,10000 +
+									Math.random()*120000, "Credito");
+							cuentaBancariaServicio.debito(cuentaId,1000 +
+									Math.random()*9000, "Debito");
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			});
 		};

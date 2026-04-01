@@ -1,9 +1,6 @@
 package com.banca_digital.servicios.implemento;
 
-import com.banca_digital.dto.ClienteDTO;
-import com.banca_digital.dto.CuentaActualDTO;
-import com.banca_digital.dto.CuentaAhorroDTO;
-import com.banca_digital.dto.CuentaBancariaDTO;
+import com.banca_digital.dto.*;
 import com.banca_digital.entidades.*;
 import com.banca_digital.enums.TipoOperacion;
 import com.banca_digital.excepciones.ExcepcionClienteNoEncontrado;
@@ -17,6 +14,9 @@ import com.banca_digital.servicios.CuentaBancariaServicio;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -62,6 +62,14 @@ public class ImplementarCuentaBancariaServicio implements CuentaBancariaServicio
         Cliente cliente = cuentaBancariaMapper.mapearDeClienteDTO(clienteDTO);
         Cliente clienteBD = clienteRepositorio.save(cliente);
         return cuentaBancariaMapper.mapearDeCliente(clienteBD);
+    }
+
+    @Override
+    public List<ClienteDTO> buscarClientes(String keyword) {
+        List<Cliente> clientes = clienteRepositorio.buscarClientes(keyword);
+        List<ClienteDTO> clientesDTOS = clientes.stream().map(cliente ->
+                cuentaBancariaMapper.mapearDeCliente(cliente)).collect(Collectors.toList());
+        return clientesDTOS;
     }
 
     @Override
@@ -180,5 +188,35 @@ public class ImplementarCuentaBancariaServicio implements CuentaBancariaServicio
             }
         }).collect(Collectors.toList());
         return cuentaBancariasDTOS;
+    }
+
+    @Override
+    public List<OperacionCuentaDTO> historialOperaciones(String cuentaId) {
+        List<OperacionCuenta> operacionesDeCuenta = operacionCuentaRepositorio.findByCuentaBancariaId(cuentaId);
+        return operacionesDeCuenta.stream().map(operacionCuenta ->
+            cuentaBancariaMapper.mapearDeOperacionCuenta(operacionCuenta)
+        ).collect(Collectors.toList());
+    }
+
+    @Override
+    public HistorialCuentaDTO getHistorialCuenta(String cuentaId, int pagina, int tamanio)
+            throws ExcepcionCuentaBancariaNoEncontrada {
+        CuentaBancaria cuentaBancaria = cuentaBancariaRepositorio.findById(cuentaId).orElse(null);
+        if(cuentaBancaria == null){
+            throw new ExcepcionCuentaBancariaNoEncontrada("Cuenta bancaria no encontrada");
+        }
+        Page<OperacionCuenta> operacionesCuenta = operacionCuentaRepositorio
+                .findByCuentaBancariaIdOrderByFechaOperacionDesc(cuentaId, PageRequest.of(pagina, tamanio));
+        HistorialCuentaDTO historialCuentaDTO = new HistorialCuentaDTO();
+        List<OperacionCuentaDTO> operacionesCuentaDTOS = operacionesCuenta.
+                getContent().stream().map(operacionCuenta -> cuentaBancariaMapper.
+                        mapearDeOperacionCuenta(operacionCuenta)).collect(Collectors.toList());
+        historialCuentaDTO.setOperacionCuentaDTOS(operacionesCuentaDTOS);
+        historialCuentaDTO.setCuentaId(cuentaBancaria.getId());
+        historialCuentaDTO.setSaldo(cuentaBancaria.getSaldo());
+        historialCuentaDTO.setPaginaActual(pagina);
+        historialCuentaDTO.setTamanioPagina(tamanio);
+        historialCuentaDTO.setTotalPaginas(operacionesCuenta.getTotalPages());
+        return historialCuentaDTO;
     }
 }

@@ -169,6 +169,180 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "Listar Historial de una Cuenta",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/cuentas/02386d38-c74c-4e0f-b30d-cd782c0652c2/operaciones",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "cuentas",
+            "02386d38-c74c-4e0f-b30d-cd782c0652c2",
+            "operaciones"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Listar Historial de una Cuenta en Paginas",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/cuentas/02386d38-c74c-4e0f-b30d-cd782c0652c2/paginaOperaciones",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "cuentas",
+            "02386d38-c74c-4e0f-b30d-cd782c0652c2",
+            "paginaOperaciones"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Buscar Clientes",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"nombre\": \"Maria\",\r\n    \"email\": \"Maria@gmail.com\"\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/v1/clientes/buscar?keyword=L",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "clientes",
+            "buscar"
+          ],
+          "query": [
+            {
+              "key": "keyword",
+              "value": "L"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Realizar Debito",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"cuentaId\": \"02386d38-c74c-4e0f-b30d-cd782c0652c2\",\r\n    \"saldo\": 2000000,\r\n    \"descripcion\": \"Realizando debito\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/v1/cuentas/debito",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "cuentas",
+            "debito"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Realizar Credito",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"cuentaId\": \"02386d38-c74c-4e0f-b30d-cd782c0652c2\",\r\n    \"saldo\": 2000000,\r\n    \"descripcion\": \"Realizando credito\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/v1/cuentas/credito",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "cuentas",
+            "credito"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Realizar Transferencia",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"cuentaTitular\": \"02386d38-c74c-4e0f-b30d-cd782c0652c2\",\r\n    \"cuentaDestinatario\": \"02f4cc50-bf47-4372-a35b-e43c91e80541\",\r\n    \"importe\": \"2000000\",\r\n    \"descripcion\": \"Transfiriendo transferencia 1\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/v1/cuentas/transferencia",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "cuentas",
+            "transferencia"
+          ]
+        }
+      },
+      "response": []
     }
   ]
 }

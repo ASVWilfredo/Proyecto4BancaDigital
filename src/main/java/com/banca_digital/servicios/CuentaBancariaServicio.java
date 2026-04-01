@@ -1,9 +1,6 @@
 package com.banca_digital.servicios;
 
-import com.banca_digital.dto.ClienteDTO;
-import com.banca_digital.dto.CuentaActualDTO;
-import com.banca_digital.dto.CuentaAhorroDTO;
-import com.banca_digital.dto.CuentaBancariaDTO;
+import com.banca_digital.dto.*;
 import com.banca_digital.entidades.Cliente;
 import com.banca_digital.entidades.CuentaActual;
 import com.banca_digital.entidades.CuentaAhorro;
@@ -20,6 +17,8 @@ public interface CuentaBancariaServicio {
     ClienteDTO getCliente(Long clienteId) throws ExcepcionClienteNoEncontrado;
 
     ClienteDTO modificarCliente(ClienteDTO clienteDTO);
+
+    List<ClienteDTO> buscarClientes(String keyword);
 
     void eliminarCliente(Long clienteId);
 
@@ -42,4 +41,9 @@ public interface CuentaBancariaServicio {
             throws ExcepcionCuentaBancariaNoEncontrada, ExcepcionSaldoInsuficiente;
 
     List<CuentaBancariaDTO> listaCuentaBancarias();
+
+    List<OperacionCuentaDTO> historialOperaciones(String cuentaId);
+
+    HistorialCuentaDTO getHistorialCuenta(String cuentaId, int pagina, int tamanio)
+            throws ExcepcionCuentaBancariaNoEncontrada;
 }

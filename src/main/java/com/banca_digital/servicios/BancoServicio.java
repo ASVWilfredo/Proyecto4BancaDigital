@@ -3,7 +3,6 @@ package com.banca_digital.servicios;
 import com.banca_digital.entidades.CuentaActual;
 import com.banca_digital.entidades.CuentaAhorro;
 import com.banca_digital.entidades.CuentaBancaria;
-import com.banca_digital.repositorios.ClienteRepositorio;
 import com.banca_digital.repositorios.CuentaBancariaRepositorio;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

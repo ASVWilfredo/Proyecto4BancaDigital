@@ -5,12 +5,6 @@ import com.banca_digital.dto.CuentaActualDTO;
 import com.banca_digital.dto.CuentaAhorroDTO;
 import com.banca_digital.dto.CuentaBancariaDTO;
 import com.banca_digital.entidades.*;
-import com.banca_digital.enums.EstadoCuenta;
-import com.banca_digital.enums.TipoOperacion;
-import com.banca_digital.excepciones.ExcepcionClienteNoEncontrado;
-import com.banca_digital.repositorios.ClienteRepositorio;
-import com.banca_digital.repositorios.CuentaBancariaRepositorio;
-import com.banca_digital.repositorios.OperacionCuentaRepositorio;
 import com.banca_digital.servicios.BancoServicio;
 import com.banca_digital.servicios.CuentaBancariaServicio;
 import org.springframework.boot.CommandLineRunner;
@@ -18,9 +12,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import java.util.Date;
+
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Stream;
 
 @SpringBootApplication

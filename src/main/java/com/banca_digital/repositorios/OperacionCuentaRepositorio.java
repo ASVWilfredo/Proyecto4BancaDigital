@@ -1,6 +1,6 @@
 package com.banca_digital.repositorios;
 
-import com.banca_digital.dto.OperacionCuentaDTO;
+
 import com.banca_digital.entidades.OperacionCuenta;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

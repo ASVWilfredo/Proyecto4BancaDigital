@@ -1,7 +1,6 @@
 package com.banca_digital.web;
 
 import com.banca_digital.dto.*;
-import com.banca_digital.entidades.OperacionCuenta;
 import com.banca_digital.excepciones.ExcepcionCuentaBancariaNoEncontrada;
 import com.banca_digital.excepciones.ExcepcionSaldoInsuficiente;
 import com.banca_digital.servicios.CuentaBancariaServicio;
